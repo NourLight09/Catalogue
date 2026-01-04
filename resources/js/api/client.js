@@ -21,10 +21,10 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Redirect to login or handle auth error
-      window.location.href = '/login';
-    }
+    // We don't want to redirect globally on 401 because we check auth status on public pages
+    // if (error.response?.status === 401) {
+    //   window.location.href = '/login';
+    // }
     return Promise.reject(error);
   }
 );

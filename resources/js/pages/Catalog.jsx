@@ -39,10 +39,23 @@ export default function Catalog() {
 
     if (selectedCategory) {
       // Check if selectedCategory is an ID or a Slug
-      const categoryBySlug = categories.find(c => c.slug === selectedCategory);
-      const categoryIdToCheck = categoryBySlug ? categoryBySlug.id : Number(selectedCategory);
-
-      matchesCategory = product.category_id === categoryIdToCheck;
+      // If selectedCategory is a number (or string number), compare with ID
+      // If selectedCategory is a string (slug), compare with slug
+      
+      const isId = !isNaN(selectedCategory);
+      
+      if (isId) {
+         matchesCategory = product.category_id === Number(selectedCategory);
+      } else {
+         // It's a slug, find the category first
+         const categoryBySlug = categories.find(c => c.slug === selectedCategory);
+         if (categoryBySlug) {
+            matchesCategory = product.category_id === categoryBySlug.id;
+         } else {
+            // Fallback: maybe the product has a category object loaded?
+            matchesCategory = product.category?.slug === selectedCategory;
+         }
+      }
     }
 
     const matchesSearch = !searchQuery ||
