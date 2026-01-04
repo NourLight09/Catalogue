@@ -14,7 +14,7 @@ export default function Catalog() {
 
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ['products'],
-    queryFn: () => api.entities.Product.list('-created_date', 100),
+    queryFn: () => api.entities.Product.list(),
     initialData: [],
   });
 

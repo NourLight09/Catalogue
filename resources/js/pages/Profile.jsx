@@ -14,7 +14,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
-    full_name: '',
+    name: '',
   });
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function Profile() {
     try {
       const currentUser = await api.auth.me();
       setUser(currentUser);
-      setFormData({ full_name: currentUser.full_name });
+      setFormData({ name: currentUser.name });
     } catch (error) {
       toast.error('Erreur lors du chargement du profil');
     } finally {
@@ -114,14 +114,14 @@ export default function Profile() {
             <CardContent className="p-8 space-y-6">
               {/* Full Name */}
               <div className="space-y-2">
-                <Label htmlFor="full_name" className="text-gray-700 font-medium flex items-center gap-2">
+                <Label htmlFor="name" className="text-gray-700 font-medium flex items-center gap-2">
                   <User className="w-4 h-4" />
                   Nom complet
                 </Label>
                 <Input
-                  id="full_name"
-                  value={formData.full_name}
-                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   disabled={!editing}
                   className="text-lg py-6"
                 />
@@ -166,7 +166,7 @@ export default function Profile() {
                   <div>
                     <p className="text-gray-500">Compte créé le</p>
                     <p className="font-medium text-gray-900">
-                      {new Date(user.created_date).toLocaleDateString('fr-FR', {
+                      {new Date(user.created_at).toLocaleDateString('fr-FR', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'

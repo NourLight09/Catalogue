@@ -18,7 +18,7 @@ export default function AdminHeader({ title, subtitle }) {
     useEffect(() => {
         // Mock user data - replace with real API when ready
         setUser({
-            full_name: 'Admin User',
+            name: 'Admin User',
             email: 'admin@catalogue-glow.com',
             role: 'admin'
         });
@@ -66,12 +66,12 @@ export default function AdminHeader({ title, subtitle }) {
                             <div className="flex items-center gap-3 pl-4 border-l border-stone-200 cursor-pointer hover:bg-stone-50 rounded px-2 py-1">
                                 <div className="w-9 h-9 bg-gradient-to-br from-rose-100 to-amber-100 rounded-full flex items-center justify-center">
                                     <span className="text-sm font-medium text-stone-700">
-                                        {user?.full_name?.charAt(0) || 'A'}
+                                        {user?.name?.charAt(0) || 'A'}
                                     </span>
                                 </div>
                                 <div className="text-left hidden md:block">
                                     <p className="text-sm font-medium text-stone-900">
-                                        {user?.full_name || 'Admin'}
+                                        {user?.name || 'Admin'}
                                     </p>
                                     <p className="text-xs text-stone-500">Administrateur</p>
                                 </div>

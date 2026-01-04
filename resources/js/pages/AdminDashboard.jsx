@@ -70,7 +70,7 @@ export default function AdminDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-rose-500 to-pink-600 rounded-2xl p-8 mb-8 text-white shadow-xl"
       >
-        <h1 className="text-3xl font-bold mb-2">Bienvenue, {user?.full_name} 👋</h1>
+        <h1 className="text-3xl font-bold mb-2">Bienvenue, {user?.name} 👋</h1>
         <p className="text-rose-100">Voici un aperçu de votre boutique Glow Cosmetics</p>
       </motion.div>
 

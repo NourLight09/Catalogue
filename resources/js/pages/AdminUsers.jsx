@@ -106,7 +106,7 @@ export default function AdminUsers() {
   };
 
   const filteredUsers = users.filter(user =>
-    user.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -229,11 +229,11 @@ export default function AdminUsers() {
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center">
                               <span className="text-white font-semibold text-sm">
-                                {user.full_name?.charAt(0).toUpperCase() || 'U'}
+                                {user.name?.charAt(0).toUpperCase() || 'U'}
                               </span>
                             </div>
                             <div>
-                              <p className="font-medium text-gray-900">{user.full_name}</p>
+                              <p className="font-medium text-gray-900">{user.name}</p>
                             </div>
                           </div>
                         </TableCell>
@@ -250,7 +250,7 @@ export default function AdminUsers() {
                           )}
                         </TableCell>
                         <TableCell className="text-gray-600">
-                          {new Date(user.created_date).toLocaleDateString('fr-FR', {
+                          {new Date(user.created_at).toLocaleDateString('fr-FR', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric'
@@ -304,11 +304,11 @@ export default function AdminUsers() {
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center">
                   <span className="text-white font-semibold">
-                    {editingUser.full_name?.charAt(0).toUpperCase() || 'U'}
+                    {editingUser.name?.charAt(0).toUpperCase() || 'U'}
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">{editingUser.full_name}</p>
+                  <p className="font-medium text-gray-900">{editingUser.name}</p>
                   <p className="text-sm text-gray-600">{editingUser.email}</p>
                 </div>
               </div>
@@ -361,7 +361,7 @@ export default function AdminUsers() {
             <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
             <AlertDialogDescription>
               Cette action est irréversible. Cela supprimera définitivement le compte de{' '}
-              <span className="font-semibold text-gray-900">{userToDelete?.full_name}</span>
+              <span className="font-semibold text-gray-900">{userToDelete?.name}</span>
               {' '}et toutes les données associées.
             </AlertDialogDescription>
           </AlertDialogHeader>
