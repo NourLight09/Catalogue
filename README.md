@@ -22,10 +22,11 @@ Assurez-vous d’avoir installé sur votre machine :
 ## Installation du projet
 
 ### 1. Cloner le projet
+Placez-vous là où vous voulez mettre votre projet, puis clonez-le :
 
 ```bash
-git clone <url-du-repo>
-cd <nom-du-projet>
+git clone https://github.com/NourLight09/Catalogue.git
+cd Catalogue
 ```
 ---
 
