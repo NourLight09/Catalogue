@@ -2,7 +2,7 @@
 
 Ce projet est un site web de catalogue développé avec **Laravel (PHP)** et un front utilisant **npm**.
 
-C'est une plateforme e-commerce de cosmétiques sous Laravel, combinant un catalogue public pour les visiteurs et une interface d'administration sécurisée pour la gestion des stocks et des produits.
+C'est une plateforme e-commerce de cosmétiques sous Laravel, combinant un catalogue public pour les visiteurs et une interface d'administration pour la gestion des stocks et des produits.
 
 ---
 
@@ -87,7 +87,7 @@ php artisan migrate:fresh --seed
 ---
 
 ## Lancer le projet
-    Pour faire fonctionner le projet, il faut lancer Laravel et le serveur front en même temps dans deux terminaux séparés.
+Pour faire fonctionner le projet, il faut lancer Laravel et le serveur front en même temps dans deux terminaux séparés.
 
 ### Terminal 1 – Serveur Laravel
 
