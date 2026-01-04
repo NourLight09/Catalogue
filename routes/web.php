@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +25,7 @@ Route::middleware('auth')->group(function () {
 
     Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
+    Route::apiResource('users', UserController::class);
 });
 
 Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
@@ -31,7 +33,7 @@ Route::apiResource('products', ProductController::class)->only(['index', 'show']
 
 require __DIR__ . '/auth.php';
 
-// React app routes - catch all routes under /app
+// Routes de l'application React - capture toutes les routes sous /app
 Route::get('/app/{any?}', function () {
     return view('app');
 })->where('any', '.*');

@@ -12,7 +12,8 @@ import {
     MoreHorizontal,
     Image as ImageIcon,
     Loader2,
-    X
+    X,
+    Eye
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,6 +64,7 @@ import { toast } from "sonner";
 export default function AdminProducts() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [formData, setFormData] = useState({
@@ -80,19 +82,19 @@ export default function AdminProducts() {
     const queryClient = useQueryClient();
 
     const { data: products = [], isLoading } = useQuery({
-        queryKey: ['admin-products'],
+        queryKey: ['products'],
         queryFn: () => api.entities.Product.list(),
     });
 
     const { data: categories = [] } = useQuery({
-        queryKey: ['admin-categories'],
+        queryKey: ['categories'],
         queryFn: () => api.entities.Category.list(),
     });
 
     const createMutation = useMutation({
         mutationFn: (data) => api.entities.Product.create(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+            queryClient.invalidateQueries({ queryKey: ['products'] });
             toast.success('Produit créé avec succès');
             handleCloseDialog();
         },
@@ -101,7 +103,7 @@ export default function AdminProducts() {
     const updateMutation = useMutation({
         mutationFn: ({ id, data }) => api.entities.Product.update(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+            queryClient.invalidateQueries({ queryKey: ['products'] });
             toast.success('Produit mis à jour');
             handleCloseDialog();
         },
@@ -110,7 +112,7 @@ export default function AdminProducts() {
     const deleteMutation = useMutation({
         mutationFn: (id) => api.entities.Product.delete(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-products'] });
+            queryClient.invalidateQueries({ queryKey: ['products'] });
             toast.success('Produit supprimé');
             setIsDeleteDialogOpen(false);
             setSelectedProduct(null);
@@ -130,6 +132,11 @@ export default function AdminProducts() {
             featured: false
         });
         setIsDialogOpen(true);
+    };
+
+    const handleOpenView = (product) => {
+        setSelectedProduct(product);
+        setIsViewDialogOpen(true);
     };
 
     const handleOpenEdit = (product) => {
@@ -191,7 +198,7 @@ export default function AdminProducts() {
                 />
 
                 <main className="p-8">
-                    {/* Toolbar */}
+                    {/* Barre d'outils */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-between mb-6">
                         <div className="relative flex-1 max-w-md">
                             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
@@ -208,7 +215,7 @@ export default function AdminProducts() {
                         </Button>
                     </div>
 
-                    {/* Table */}
+                    {/* Tableau */}
                     <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
                         <Table>
                             <TableHeader>
@@ -276,37 +283,43 @@ export default function AdminProducts() {
                                             </TableCell>
                                             <TableCell>
                                                 {product.stock_quantity === 0 ? (
-                                                    <Badge className="bg-red-100 text-red-700">Rupture</Badge>
+                                                    <Badge className="bg-red-600 text-white hover:bg-red-700">Rupture</Badge>
                                                 ) : product.stock_quantity <= 5 ? (
-                                                    <Badge className="bg-orange-100 text-orange-700">Stock faible</Badge>
+                                                    <Badge className="bg-orange-500 text-white hover:bg-orange-600">Stock faible</Badge>
                                                 ) : (
-                                                    <Badge className="bg-green-100 text-green-700">En stock</Badge>
+                                                    <Badge className="bg-green-600 text-white hover:bg-green-700">En stock</Badge>
                                                 )}
                                             </TableCell>
                                             <TableCell>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="icon">
-                                                            <MoreHorizontal size={18} />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem onClick={() => handleOpenEdit(product)}>
-                                                            <Edit size={14} className="mr-2" />
-                                                            Modifier
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem
-                                                            className="text-red-600"
-                                                            onClick={() => {
-                                                                setSelectedProduct(product);
-                                                                setIsDeleteDialogOpen(true);
-                                                            }}
-                                                        >
-                                                            <Trash2 size={14} className="mr-2" />
-                                                            Supprimer
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
+                                                <div className="flex items-center justify-end gap-1">
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="icon" 
+                                                        className="h-8 w-8 text-stone-500 hover:text-stone-900"
+                                                        onClick={() => handleOpenView(product)}
+                                                    >
+                                                        <Eye size={16} />
+                                                    </Button>
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="icon" 
+                                                        className="h-8 w-8 text-stone-500 hover:text-stone-900"
+                                                        onClick={() => handleOpenEdit(product)}
+                                                    >
+                                                        <Edit size={16} />
+                                                    </Button>
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="icon" 
+                                                        className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={() => {
+                                                            setSelectedProduct(product);
+                                                            setIsDeleteDialogOpen(true);
+                                                        }}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -316,7 +329,7 @@ export default function AdminProducts() {
                     </div>
                 </main>
 
-            {/* Create/Edit Dialog */}
+            {/* Dialogue de Création/Édition */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
@@ -437,7 +450,95 @@ export default function AdminProducts() {
                 </DialogContent>
             </Dialog>
 
-            {/* Delete Confirmation */}
+            {/* Dialogue de Visualisation */}
+            <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+                <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle className="font-display font-light text-xl">
+                            Détails du produit
+                        </DialogTitle>
+                    </DialogHeader>
+                    
+                    {selectedProduct && (
+                        <div className="grid gap-4 py-4">
+                            <div className="flex items-center gap-4">
+                                <div className="w-20 h-20 bg-stone-100 rounded-lg flex items-center justify-center overflow-hidden">
+                                    {selectedProduct.image_url ? (
+                                        <img 
+                                            src={selectedProduct.image_url} 
+                                            alt={selectedProduct.name} 
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <ImageIcon size={32} className="text-stone-400" />
+                                    )}
+                                </div>
+                                <div>
+                                    <h3 className="font-medium text-lg">{selectedProduct.name}</h3>
+                                    <div className="flex gap-2 mt-1">
+                                        <Badge variant="outline">
+                                            {selectedProduct.category_name || 'Non catégorisé'}
+                                        </Badge>
+                                        {selectedProduct.featured && (
+                                            <Badge className="bg-amber-100 text-amber-700">Featured</Badge>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <Label className="text-stone-500">Prix</Label>
+                                    <p className="text-stone-900 font-medium">
+                                        {Number(selectedProduct.price || 0).toFixed(2)} €
+                                    </p>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-stone-500">Stock</Label>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-stone-900 font-medium">
+                                            {selectedProduct.stock_quantity || 0} unités
+                                        </span>
+                                        {selectedProduct.stock_quantity === 0 ? (
+                                            <Badge className="bg-red-100 text-red-700 text-xs">Rupture</Badge>
+                                        ) : selectedProduct.stock_quantity <= 5 ? (
+                                            <Badge className="bg-orange-100 text-orange-700 text-xs">Faible</Badge>
+                                        ) : (
+                                            <Badge className="bg-green-100 text-green-700 text-xs">En stock</Badge>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1">
+                                <Label className="text-stone-500">Description</Label>
+                                <p className="text-stone-900 text-sm">
+                                    {selectedProduct.description || <span className="italic text-stone-400">Aucune description</span>}
+                                </p>
+                            </div>
+
+                            {selectedProduct.ingredients && (
+                                <div className="space-y-1">
+                                    <Label className="text-stone-500">Ingrédients</Label>
+                                    <p className="text-stone-900 text-sm whitespace-pre-line">
+                                        {Array.isArray(selectedProduct.ingredients) 
+                                            ? selectedProduct.ingredients.join(', ') 
+                                            : selectedProduct.ingredients || <span className="italic text-stone-400">Non spécifié</span>}
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <DialogFooter>
+                        <Button onClick={() => setIsViewDialogOpen(false)}>
+                            Fermer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Confirmation de Suppression */}
             <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

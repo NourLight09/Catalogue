@@ -24,7 +24,7 @@ export default function Catalog() {
     initialData: [],
   });
 
-  // Check URL params for category filter
+  // Vérifier les paramètres d'URL pour le filtre de catégorie
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const categoryId = params.get('category');
@@ -33,21 +33,21 @@ export default function Catalog() {
     }
   }, []);
 
-  // Filter products
+  // Filtrer les produits
   const filteredProducts = products.filter(product => {
     let matchesCategory = !selectedCategory;
 
     if (selectedCategory) {
-      // Check if selectedCategory is an ID or a Slug
-      // If selectedCategory is a number (or string number), compare with ID
-      // If selectedCategory is a string (slug), compare with slug
+      // Vérifier si selectedCategory est un ID ou un Slug
+      // Si selectedCategory est un nombre (ou une chaîne numérique), comparer avec l'ID
+      // Si selectedCategory est une chaîne (slug), comparer avec le slug
       
       const isId = !isNaN(selectedCategory);
       
       if (isId) {
          matchesCategory = product.category_id === Number(selectedCategory);
       } else {
-         // It's a slug, find the category first
+         // C'est un slug, trouver d'abord la catégorie
          const categoryBySlug = categories.find(c => c.slug === selectedCategory);
          if (categoryBySlug) {
             matchesCategory = product.category_id === categoryBySlug.id;

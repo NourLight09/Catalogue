@@ -1,6 +1,6 @@
-// Page routing configuration
+// Configuration du routage des pages
 const pageRoutes = {
-  // Public pages
+  // Pages publiques
   'Home': '/app',
   'Products': '/app/products',
   'ProductDetail': '/app/product',
@@ -8,7 +8,7 @@ const pageRoutes = {
   'Catalog': '/app/catalog',
   'Profile': '/app/profile',
   
-  // Admin pages
+  // Pages d'administration
   'AdminDashboard': '/app/admin/dashboard',
   'AdminProducts': '/app/admin/products',
   'AdminCategories': '/app/admin/categories',
@@ -17,12 +17,12 @@ const pageRoutes = {
 };
 
 /**
- * Create a URL for a specific page
- * @param {string} pageName - The page name (e.g., 'Home', 'Products', 'AdminDashboard')
- * @returns {string} The full URL path with query parameters if included
+ * Créer une URL pour une page spécifique
+ * @param {string} pageName - Le nom de la page (ex: 'Home', 'Products', 'AdminDashboard')
+ * @returns {string} Le chemin URL complet avec les paramètres de requête si inclus
  */
 export const createPageUrl = (pageName) => {
-  // Handle query parameters (e.g., "ProductDetail?id=123")
+  // Gérer les paramètres de requête (ex: "ProductDetail?id=123")
   const [page, queryString] = pageName.split('?');
   const basePath = pageRoutes[page] || '/app';
   
@@ -34,13 +34,13 @@ export const createPageUrl = (pageName) => {
 };
 
 /**
- * Get the current page name from the URL
- * @returns {string|null} The page name or null
+ * Obtenir le nom de la page actuelle à partir de l'URL
+ * @returns {string|null} Le nom de la page ou null
  */
 export const getCurrentPageName = () => {
   const path = window.location.pathname;
   
-  // Find matching page by path
+  // Trouver la page correspondante par chemin
   for (const [page, route] of Object.entries(pageRoutes)) {
     if (path === route || path.startsWith(route)) {
       return page;

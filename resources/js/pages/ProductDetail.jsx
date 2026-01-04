@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { api } from '../api/client';
+import { useCart } from '@/contexts/CartContext';
 
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -11,23 +12,35 @@ import { motion } from 'framer-motion';
 import ProductCard from '@/components/shop/ProductCard';
 
 export default function ProductDetail() {
-  const [productId, setProductId] = useState(null);
+  const [searchParams] = useSearchParams();
+  const productId = searchParams.get('id');
+  const { addToCart } = useCart();
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setProductId(params.get('id'));
-  }, []);
-
-  const { data: products = [] } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => api.entities.Product.list(),
-    initialData: [],
+  const { data: product, isLoading } = useQuery({
+    queryKey: ['product', productId],
+    queryFn: () => api.entities.Product.get(productId),
+    enabled: !!productId,
   });
 
-  const product = products.find(p => p.id === Number(productId));
-  const relatedProducts = products
-    .filter(p => p.id !== productId && p.category_id === product?.category_id)
-    .slice(0, 4);
+  const { data: relatedProducts = [] } = useQuery({
+    queryKey: ['related-products', product?.category_id],
+    queryFn: async () => {
+      if (!product?.category_id) return [];
+      const allProducts = await api.entities.Product.list();
+      return allProducts
+        .filter(p => p.id !== Number(productId) && p.category_id === product.category_id)
+        .slice(0, 4);
+    },
+    enabled: !!product?.category_id,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500"></div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -48,7 +61,7 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Breadcrumb */}
+      {/* Fil d'ariane */}
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link
@@ -62,7 +75,7 @@ export default function ProductDetail() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Product Details */}
+        {/* Détails du produit */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
           {/* Image */}
           <motion.div
@@ -81,24 +94,24 @@ export default function ProductDetail() {
             </div>
           </motion.div>
 
-          {/* Info */}
+          {/* Infos */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="space-y-6"
           >
-            {/* Category Badge */}
+            {/* Badge de catégorie */}
             <Badge className="bg-rose-100 text-rose-700 border-0 text-sm px-4 py-1">
               {product.category_name || 'Produit'}
             </Badge>
 
-            {/* Name */}
+            {/* Nom */}
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
               {product.name}
             </h1>
 
-            {/* Rating */}
+            {/* Note */}
             <div className="flex items-center gap-3">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
@@ -108,12 +121,12 @@ export default function ProductDetail() {
               <span className="text-gray-600">(128 avis)</span>
             </div>
 
-            {/* Price */}
+            {/* Prix */}
             <div className="flex items-baseline gap-4">
               <span className="text-5xl font-bold text-gray-900">{product.price}€</span>
             </div>
 
-            {/* Stock Status */}
+            {/* Statut du stock */}
             <div className="flex items-center gap-2">
               {product.stock_quantity > 0 ? (
                 <>
@@ -138,7 +151,7 @@ export default function ProductDetail() {
               </p>
             </div>
 
-            {/* Ingredients */}
+            {/* Ingrédients */}
             {product.ingredients && product.ingredients.length > 0 && (
               <div className="border-t border-gray-200 pt-6">
                 <h3 className="font-semibold text-gray-900 mb-3 text-lg">Ingrédients</h3>
@@ -155,7 +168,7 @@ export default function ProductDetail() {
               </div>
             )}
 
-            {/* Features */}
+            {/* Caractéristiques */}
             <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-2xl p-6">
               <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-rose-500" />
@@ -181,18 +194,19 @@ export default function ProductDetail() {
               </ul>
             </div>
 
-            {/* CTA Button */}
+            {/* Bouton d'action */}
             <Button
               size="lg"
               className="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white hover:shadow-2xl transition-all py-7 text-lg"
               disabled={product.stock_quantity === 0}
+              onClick={() => addToCart(product)}
             >
               {product.stock_quantity > 0 ? 'Ajouter au panier' : 'Produit indisponible'}
             </Button>
           </motion.div>
         </div>
 
-        {/* Related Products */}
+        {/* Produits similaires */}
         {relatedProducts.length > 0 && (
           <section>
             <h2 className="text-3xl font-bold text-gray-900 mb-8">Produits similaires</h2>

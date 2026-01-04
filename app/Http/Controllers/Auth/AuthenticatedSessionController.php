@@ -28,10 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->user()->role === 'admin') {
-            return redirect()->intended('/app/admin/dashboard');
-        }
-
+        // Always redirect to the main app, admins will see the admin button
         return redirect()->intended('/app');
     }
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class ProductSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Exécuter les seeders de la base de données.
      */
     public function run(): void
     {
@@ -100,8 +100,57 @@ class ProductSeeder extends Seeder
                 'ingredients' => json_encode(['Sugar', 'Honey', 'Almond Oil']),
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]
-        ];
+            ],
+            // Rupture de stock
+            [
+                'name' => 'Huile Démaquillante Douceur',
+                'description' => 'Élimine efficacement le maquillage, même waterproof, sans laisser de film gras.',
+                'price' => 22.00,
+                'stock' => 0,
+                'category_id' => $skincareId,
+                'image' => 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600&auto=format&fit=crop',
+                'featured' => false,
+                'ingredients' => json_encode(['Jojoba Oil', 'Vitamin E', 'Sunflower Oil']),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Palette Yeux Nude',
+                'description' => '12 teintes neutres pour un maquillage naturel au quotidien.',
+                'price' => 42.00,
+                'stock' => 0,
+                'category_id' => $makeupId,
+                'image' => 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?q=80&w=600&auto=format&fit=crop',
+                'featured' => false,
+                'ingredients' => json_encode(['Talc', 'Mica', 'Silica']),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Stock faible
+            [
+                'name' => 'Brume Parfumée Été',
+                'description' => 'Une brume légère aux notes de coco et de vanille.',
+                'price' => 15.00,
+                'stock' => 3,
+                'category_id' => $perfumeId,
+                'image' => 'https://images.unsplash.com/photo-1620916297397-a4a5402a3c6c?q=80&w=600&auto=format&fit=crop',
+                'featured' => false,
+                'ingredients' => json_encode(['Alcohol', 'Water', 'Fragrance']),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Lait Corps Karité',
+                'description' => 'Nourrit intensément les peaux très sèches.',
+                'price' => 19.50,
+                'stock' => 4,
+                'category_id' => $bodyId,
+                'image' => 'https://images.unsplash.com/photo-1608248597279-f99d160bfbc8?q=80&w=600&auto=format&fit=crop',
+                'featured' => false,
+                'ingredients' => json_encode(['Shea Butter', 'Glycerin', 'Aloe Vera']),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],        ];
 
         // Ajouter les slugs
         foreach ($products as &$product) {

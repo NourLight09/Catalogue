@@ -68,19 +68,19 @@ export default function AdminCategories() {
     const queryClient = useQueryClient();
 
     const { data: categories = [], isLoading } = useQuery({
-        queryKey: ['admin-categories'],
+        queryKey: ['categories'],
         queryFn: () => api.entities.Category.list(),
     });
 
     const { data: products = [] } = useQuery({
-        queryKey: ['admin-products'],
+        queryKey: ['products'],
         queryFn: () => api.entities.Product.list(),
     });
 
     const createMutation = useMutation({
         mutationFn: (data) => api.entities.Category.create(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Catégorie créée avec succès');
             handleCloseDialog();
         },
@@ -89,7 +89,7 @@ export default function AdminCategories() {
     const updateMutation = useMutation({
         mutationFn: ({ id, data }) => api.entities.Category.update(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Catégorie mise à jour');
             handleCloseDialog();
         },
@@ -98,7 +98,7 @@ export default function AdminCategories() {
     const deleteMutation = useMutation({
         mutationFn: (id) => api.entities.Category.delete(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
             toast.success('Catégorie supprimée');
             setIsDeleteDialogOpen(false);
             setSelectedCategory(null);
@@ -203,7 +203,7 @@ export default function AdminCategories() {
                 />
 
                 <main className="p-8">
-                    {/* Toolbar */}
+                    {/* Barre d'outils */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-between mb-6">
                         <div className="relative flex-1 max-w-md">
                             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
@@ -220,7 +220,7 @@ export default function AdminCategories() {
                         </Button>
                     </div>
 
-                    {/* Table */}
+                    {/* Tableau */}
                     <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
                         <Table>
                             <TableHeader>
@@ -310,7 +310,7 @@ export default function AdminCategories() {
                     </div>
                 </main>
 
-            {/* Create/Edit Dialog */}
+            {/* Dialogue de Création/Édition */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
@@ -412,7 +412,7 @@ export default function AdminCategories() {
                 </DialogContent>
             </Dialog>
 
-            {/* View Dialog */}
+            {/* Dialogue de Visualisation */}
             <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
@@ -469,7 +469,7 @@ export default function AdminCategories() {
                 </DialogContent>
             </Dialog>
 
-            {/* Delete Confirmation */}
+            {/* Confirmation de Suppression */}
             <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { api } from './api/client';
+import { useCart } from '@/contexts/CartContext';
 
 import { Menu, X, ShoppingBag, User, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import CartSidebar from '@/components/shop/CartSidebar';
 
 export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { cartCount, setIsCartOpen } = useCart();
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user && user.role === 'admin';
   const isAdminPage = currentPageName?.startsWith('Admin');
   useEffect(() => {
     const loadUser = async () => {
@@ -28,14 +31,14 @@ export default function Layout({ children, currentPageName }) {
     loadUser();
   }, []);
 
-  // Redirect logic for Admin Pages
+  // Logique de redirection pour les pages d'administration
   useEffect(() => {
     if (!loading && isAdminPage) {
       if (!user) {
-        // Not logged in -> Go to Login
+        // Non connecté -> Aller à la connexion
         window.location.href = '/login';
       } else if (user.role !== 'admin') {
-        // Logged in but not admin -> Go Home
+        // Connecté mais pas administrateur -> Aller à l'accueil
         window.location.href = '/app';
       }
     }
@@ -45,7 +48,7 @@ export default function Layout({ children, currentPageName }) {
     try {
       await api.auth.logout();
     } catch (error) {
-      window.location.href = '/';
+      window.location.href = '/app';
     }
   };
 
@@ -239,17 +242,31 @@ export default function Layout({ children, currentPageName }) {
                 Catalogue
               </Link>
 
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative p-2 text-gray-700 hover:text-rose-500 transition-colors"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
               {!loading && (
                 <>
-                  {user && isAdmin && (
+                  {user ? (
                     <>
-                      <Link
-                        to={createPageUrl('AdminDashboard')}
-                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white text-sm font-medium hover:shadow-lg transition-all"
-                      >
-                        <LayoutDashboard className="w-4 h-4" />
-                        Administration
-                      </Link>
+                      {user && user.role === 'admin' && (
+                        <Link
+                          to={createPageUrl('AdminDashboard')}
+                          className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 text-white text-sm font-medium hover:shadow-lg transition-all"
+                        >
+                          <LayoutDashboard className="w-4 h-4" />
+                          Administration
+                        </Link>
+                      )}
                       <Button
                         onClick={handleLogout}
                         variant="outline"
@@ -260,22 +277,52 @@ export default function Layout({ children, currentPageName }) {
                         Déconnexion
                       </Button>
                     </>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <a
+                        href="/login"
+                        className="text-sm font-medium text-gray-700 hover:text-rose-500 px-3 py-2"
+                      >
+                        Se connecter
+                      </a>
+                      <a
+                        href="/register"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition-all"
+                      >
+                        <User className="w-4 h-4" />
+                        S'inscrire
+                      </a>
+                    </div>
                   )}
                 </>
               )}
             </div>
 
             {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-6 h-6 text-gray-700" />
-              ) : (
-                <Menu className="w-6 h-6 text-gray-700" />
-              )}
-            </button>
+            <div className="flex items-center gap-4 md:hidden">
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className="relative p-2 text-gray-700 hover:text-rose-500 transition-colors"
+              >
+                <ShoppingBag className="w-6 h-6" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+              
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-lg hover:bg-gray-100"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6 text-gray-700" />
+                ) : (
+                  <Menu className="w-6 h-6 text-gray-700" />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Mobile Menu */}
@@ -293,7 +340,23 @@ export default function Layout({ children, currentPageName }) {
               >
                 Catalogue
               </Link>
-              {user && isAdmin && (
+              {!user && (
+                <>
+                  <a
+                    href="/login"
+                    className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-rose-50 hover:text-rose-500 rounded-lg"
+                  >
+                    Se connecter
+                  </a>
+                  <a
+                    href="/register"
+                    className="block px-4 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50 rounded-lg"
+                  >
+                    S'inscrire
+                  </a>
+                </>
+              )}
+              {user && user.role === 'admin' && (
                 <>
                   <Link
                     to={createPageUrl('AdminDashboard')}
@@ -342,12 +405,14 @@ export default function Layout({ children, currentPageName }) {
               <ul className="space-y-2 text-gray-400 text-sm">
                 <li>contact@glowcosmetics.com</li>
                 <li>+33 1 23 45 67 89</li>
-                <li>Paris, France</li>
+                <li>Belfort, France</li>
               </ul>
             </div>
           </div>
         </div>
       </footer>
+      {/* Cart Sidebar */}
+      <CartSidebar />
     </div>
   );
 }

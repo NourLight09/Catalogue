@@ -21,13 +21,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { User, Shield, Search, Edit2 } from 'lucide-react';
+import { User, Shield, Search, Edit2, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function AdminUsers() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const queryClient = useQueryClient();
@@ -45,11 +57,40 @@ export default function AdminUsers() {
       toast.success('Rôle mis à jour');
       handleCloseDialog();
     },
+    onError: (error) => {
+      console.error('Erreur mise à jour rôle:', error);
+      toast.error('Erreur lors de la mise à jour du rôle');
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => api.entities.User.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['users']);
+      toast.success('Utilisateur supprimé');
+      setDeleteDialogOpen(false);
+      setUserToDelete(null);
+    },
+    onError: (error) => {
+      console.error('Erreur suppression utilisateur:', error);
+      toast.error('Erreur lors de la suppression de l\'utilisateur');
+    }
   });
 
   const handleOpenDialog = (user) => {
     setEditingUser(user);
     setDialogOpen(true);
+  };
+
+  const handleOpenDeleteDialog = (user) => {
+    setUserToDelete(user);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteUser = () => {
+    if (userToDelete) {
+      deleteMutation.mutate(userToDelete.id);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -216,15 +257,25 @@ export default function AdminUsers() {
                           })}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleOpenDialog(user)}
-                            className="hover:bg-rose-50 hover:border-rose-300"
-                          >
-                            <Edit2 className="w-4 h-4 mr-2" />
-                            Modifier
-                          </Button>
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleOpenDialog(user)}
+                              className="hover:bg-rose-50 hover:border-rose-300"
+                            >
+                              <Edit2 className="w-4 h-4 mr-2" />
+                              Modifier
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleOpenDeleteDialog(user)}
+                              className="text-red-600 hover:bg-red-50 hover:border-red-200 hover:text-red-700"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -302,6 +353,29 @@ export default function AdminUsers() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. Cela supprimera définitivement le compte de{' '}
+              <span className="font-semibold text-gray-900">{userToDelete?.full_name}</span>
+              {' '}et toutes les données associées.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteUser}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

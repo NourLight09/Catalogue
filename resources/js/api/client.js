@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Create axios instance
+// Créer une instance axios
 const axiosInstance = axios.create({
   headers: {
     'Accept': 'application/json',
@@ -8,7 +8,7 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// Add CSRF token to requests
+// Ajouter le jeton CSRF aux requêtes
 axiosInstance.interceptors.request.use((config) => {
   const token = document.querySelector('meta[name="csrf-token"]')?.content;
   if (token) {
@@ -17,11 +17,11 @@ axiosInstance.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle errors
+// Gérer les erreurs
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // We don't want to redirect globally on 401 because we check auth status on public pages
+    // Nous ne voulons pas rediriger globalement sur 401 car nous vérifions le statut d'authentification sur les pages publiques
     // if (error.response?.status === 401) {
     //   window.location.href = '/login';
     // }
@@ -31,18 +31,22 @@ axiosInstance.interceptors.response.use(
 
 export const api = {
   auth: {
-    // Get current user
+    // Récupérer l'utilisateur actuel
     me: async () => {
       try {
         const response = await axiosInstance.get('/current-user');
         return response.data;
       } catch (error) {
+        // Si 401, retourner null (non connecté), ne pas loguer l'erreur
+        if (error.response && error.response.status === 401) {
+          return null;
+        }
         console.error('Error fetching current user:', error);
         return null;
       }
     },
 
-    // Update current user
+    // Mettre à jour l'utilisateur actuel
     updateMe: async (data) => {
       try {
         const response = await axiosInstance.put('/profile', data);
@@ -53,11 +57,11 @@ export const api = {
       }
     },
 
-    // Logout
+    // Déconnexion
     logout: async () => {
       try {
         await axiosInstance.post('/logout');
-        window.location.href = '/';
+        window.location.href = '/app';
       } catch (error) {
         console.error('Error logging out:', error);
       }

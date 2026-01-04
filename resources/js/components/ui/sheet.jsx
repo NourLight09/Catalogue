@@ -79,3 +79,11 @@ export const SheetClose = ({ onOpenChange, onClick, children, className = '' }) 
   );
 };
 
+export const SheetFooter = ({ children, className = '' }) => {
+  return (
+    <div className={`px-6 py-4 border-t border-gray-200 ${className}`}>
+      {children}
+    </div>
+  );
+};
+

@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import Layout from './Layout';
+import { CartProvider } from './contexts/CartContext';
 
 // Pages
 import Home from './pages/Home';
@@ -19,7 +20,7 @@ import AdminCategories from './pages/AdminCategories';
 import AdminStock from './pages/AdminStock';
 import AdminUsers from './pages/AdminUsers';
 
-// Create a client for React Query
+// Créer un client pour React Query
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -29,7 +30,7 @@ const queryClient = new QueryClient({
   },
 });
 
-// Define routes with page names for the layout
+// Définir les routes avec les noms de page pour la mise en page
 const routes = [
   { path: '/app', element: <Home />, name: 'Home' },
   { path: '/app/products', element: <Products />, name: 'Products' },
@@ -47,24 +48,26 @@ const routes = [
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          {routes.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={
-                <Layout currentPageName={route.name}>
-                  {route.element}
-                </Layout>
-              }
-            />
-          ))}
-          {/* Catch all - redirect to home */}
-          <Route path="*" element={<Navigate to="/app" replace />} />
-        </Routes>
-      </Router>
-      <Toaster position="top-right" />
+      <CartProvider>
+        <Router>
+          <Routes>
+            {routes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <Layout currentPageName={route.name}>
+                    {route.element}
+                  </Layout>
+                }
+              />
+            ))}
+            {/* Catch all - redirect to home */}
+            <Route path="*" element={<Navigate to="/app" replace />} />
+          </Routes>
+        </Router>
+        <Toaster position="top-right" />
+      </CartProvider>
     </QueryClientProvider>
   );
 }

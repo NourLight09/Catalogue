@@ -49,6 +49,10 @@ export default function AdminStock() {
       toast.success('Stock mis à jour');
       handleCloseDialog();
     },
+    onError: (error) => {
+      console.error('Erreur mise à jour stock:', error);
+      toast.error('Erreur lors de la mise à jour du stock');
+    }
   });
 
   const handleOpenDialog = (product) => {
@@ -64,7 +68,7 @@ export default function AdminStock() {
   };
 
   const handleUpdateStock = () => {
-    if (editingProduct && newStock !== '') {
+    if (editingProduct && newStock !== '' && !isNaN(parseInt(newStock))) {
       updateMutation.mutate({
         id: editingProduct.id,
         stock_quantity: newStock,

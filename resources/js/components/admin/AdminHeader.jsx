@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api } from '../../api/client';
 
 import { Bell, Search, LogOut, User, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -23,9 +24,12 @@ export default function AdminHeader({ title, subtitle }) {
         });
     }, []);
 
-    const handleLogout = () => {
-        // TODO: Implement logout when API is ready
-        window.location.href = '/';
+    const handleLogout = async () => {
+        try {
+            await api.auth.logout();
+        } catch (error) {
+            window.location.href = '/app';
+        }
     };
 
     return (
