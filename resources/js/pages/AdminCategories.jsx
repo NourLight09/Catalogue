@@ -4,11 +4,11 @@ import { api } from '../api/client';
 
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminHeader from '../components/admin/AdminHeader';
-import { 
-    Plus, 
-    Search, 
-    Edit, 
-    Trash2, 
+import {
+    Plus,
+    Search,
+    Edit,
+    Trash2,
     Eye,
     MoreHorizontal,
     FolderTree,
@@ -191,23 +191,19 @@ export default function AdminCategories() {
         return products.filter(p => p.category_id === categoryId).length;
     };
 
-    const filteredCategories = categories.filter(c => 
+    const filteredCategories = categories.filter(c =>
         c.name?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
         <div className="flex-1">
-                <AdminHeader 
-                    title="Gestion des Catégories" 
-                    subtitle={`${categories.length} catégories au total`}
-                />
 
                 <main className="p-8">
                     {/* Barre d'outils */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-between mb-6">
                         <div className="relative flex-1 max-w-md">
                             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-                            <Input 
+                            <Input
                                 placeholder="Rechercher une catégorie..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -273,25 +269,25 @@ export default function AdminCategories() {
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center justify-end gap-1">
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="icon" 
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
                                                         className="h-8 w-8 text-stone-500 hover:text-stone-900"
                                                         onClick={() => handleOpenView(category)}
                                                     >
                                                         <Eye size={16} />
                                                     </Button>
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="icon" 
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
                                                         className="h-8 w-8 text-stone-500 hover:text-stone-900"
                                                         onClick={() => handleOpenEdit(category)}
                                                     >
                                                         <Edit size={16} />
                                                     </Button>
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="icon" 
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
                                                         className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
                                                         onClick={() => {
                                                             setSelectedCategory(category);
@@ -318,11 +314,11 @@ export default function AdminCategories() {
                             {selectedCategory ? 'Modifier la catégorie' : 'Nouvelle catégorie'}
                         </DialogTitle>
                     </DialogHeader>
-                    
+
                     <div className="grid gap-4 py-4">
                         <div className="space-y-2">
                             <Label>Nom de la catégorie *</Label>
-                            <Input 
+                            <Input
                                 value={formData.name}
                                 onChange={(e) => handleNameChange(e.target.value)}
                                 placeholder="Ex: Soins Visage"
@@ -331,7 +327,7 @@ export default function AdminCategories() {
 
                         <div className="space-y-2">
                             <Label>Slug (URL)</Label>
-                            <Input 
+                            <Input
                                 value={formData.slug}
                                 onChange={(e) => setFormData({...formData, slug: e.target.value})}
                                 placeholder="soins-visage"
@@ -343,7 +339,7 @@ export default function AdminCategories() {
 
                         <div className="space-y-2">
                             <Label>Description</Label>
-                            <Textarea 
+                            <Textarea
                                 value={formData.description}
                                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                                 placeholder="Description de la catégorie..."
@@ -354,22 +350,22 @@ export default function AdminCategories() {
                         <div className="space-y-2">
                             <Label>Image</Label>
                             <div className="flex gap-2 mb-2">
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                        imageMode === 'url' 
-                                            ? 'bg-stone-900 text-white hover:bg-stone-800' 
+                                        imageMode === 'url'
+                                            ? 'bg-stone-900 text-white hover:bg-stone-800'
                                             : 'bg-white text-stone-900 border border-stone-300 hover:bg-stone-50'
                                     }`}
                                     onClick={() => setImageMode('url')}
                                 >
                                     Lien URL
                                 </button>
-                                <button 
-                                    type="button" 
+                                <button
+                                    type="button"
                                     className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                        imageMode === 'file' 
-                                            ? 'bg-stone-900 text-white hover:bg-stone-800' 
+                                        imageMode === 'file'
+                                            ? 'bg-stone-900 text-white hover:bg-stone-800'
                                             : 'bg-white text-stone-900 border border-stone-300 hover:bg-stone-50'
                                     }`}
                                     onClick={() => setImageMode('file')}
@@ -377,15 +373,15 @@ export default function AdminCategories() {
                                     Fichier
                                 </button>
                             </div>
-                            
+
                             {imageMode === 'url' ? (
-                                <Input 
+                                <Input
                                     value={formData.image}
                                     onChange={(e) => setFormData({...formData, image: e.target.value})}
                                     placeholder="https://..."
                                 />
                             ) : (
-                                <Input 
+                                <Input
                                     type="file"
                                     accept="image/*"
                                     onChange={(e) => setSelectedFile(e.target.files[0])}
@@ -398,7 +394,7 @@ export default function AdminCategories() {
                         <Button variant="outline" onClick={handleCloseDialog}>
                             Annuler
                         </Button>
-                        <Button 
+                        <Button
                             onClick={handleSubmit}
                             className="bg-stone-900 hover:bg-stone-800"
                             disabled={!formData.name || !formData.slug}
@@ -420,15 +416,15 @@ export default function AdminCategories() {
                             Détails de la catégorie
                         </DialogTitle>
                     </DialogHeader>
-                    
+
                     {selectedCategory && (
                         <div className="grid gap-4 py-4">
                             <div className="flex items-center gap-4">
                                 <div className="w-20 h-20 bg-stone-100 rounded-lg flex items-center justify-center overflow-hidden">
                                     {selectedCategory.image ? (
-                                        <img 
-                                            src={selectedCategory.image} 
-                                            alt={selectedCategory.name} 
+                                        <img
+                                            src={selectedCategory.image}
+                                            alt={selectedCategory.name}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
@@ -485,7 +481,7 @@ export default function AdminCategories() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Annuler</AlertDialogCancel>
-                        <AlertDialogAction 
+                        <AlertDialogAction
                             onClick={() => deleteMutation.mutate(selectedCategory?.id)}
                             className="bg-red-600 hover:bg-red-700"
                         >

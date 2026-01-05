@@ -102,10 +102,6 @@ export default function AdminStock() {
 
   return (
     <div className="flex-1">
-      <AdminHeader
-        title="Gestion des Stocks"
-        subtitle="Suivez et gérez vos niveaux de stock"
-      />
       <main className="p-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">

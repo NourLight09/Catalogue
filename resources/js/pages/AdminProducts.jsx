@@ -185,10 +185,6 @@ export default function AdminProducts() {
 
     return (
         <div className="flex-1">
-            <AdminHeader
-                title="Gestion des Produits"
-                subtitle={`${products.length} produits au total`}
-            />
 
             <main className="p-8">
                 {/* Barre d'outils */}
