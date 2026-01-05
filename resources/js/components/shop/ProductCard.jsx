@@ -22,14 +22,14 @@ export default function ProductCard({ product, index = 0 }) {
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
-          
+
           {/* Stock Badge */}
-          {product.stock_quantity <= 5 && product.stock_quantity > 0 && (
+          {product.stock <= 5 && product.stock > 0 && (
             <Badge className="absolute top-3 right-3 bg-orange-500 text-white border-0">
               Stock limité
             </Badge>
           )}
-          {product.stock_quantity === 0 && (
+          {product.stock === 0 && (
             <Badge className="absolute top-3 right-3 bg-gray-500 text-white border-0">
               Épuisé
             </Badge>

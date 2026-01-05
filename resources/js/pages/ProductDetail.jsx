@@ -128,11 +128,11 @@ export default function ProductDetail() {
 
             {/* Statut du stock */}
             <div className="flex items-center gap-2">
-              {product.stock_quantity > 0 ? (
+              {product.stock > 0 ? (
                 <>
                   <div className="w-3 h-3 rounded-full bg-green-500" />
                   <span className="text-green-700 font-medium">
-                    En stock ({product.stock_quantity} disponibles)
+                    En stock ({product.stock} disponibles)
                   </span>
                 </>
               ) : (
@@ -198,10 +198,10 @@ export default function ProductDetail() {
             <Button
               size="lg"
               className="w-full bg-gradient-to-r from-rose-500 to-pink-600 text-white hover:shadow-2xl transition-all py-7 text-lg"
-              disabled={product.stock_quantity === 0}
+              disabled={product.stock === 0}
               onClick={() => addToCart(product)}
             >
-              {product.stock_quantity > 0 ? 'Ajouter au panier' : 'Produit indisponible'}
+              {product.stock > 0 ? 'Ajouter au panier' : 'Produit indisponible'}
             </Button>
           </motion.div>
         </div>

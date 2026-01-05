@@ -72,17 +72,17 @@ export const api = {
     Product: {
       list: async () => {
         try {
-          const response = await axiosInstance.get('/products');
+          const response = await axiosInstance.get('/app/products');
           return response.data || [];
         } catch (error) {
           console.error('Error fetching products:', error);
-          return [];
+          throw error;
         }
       },
 
       get: async (id) => {
         try {
-          const response = await axiosInstance.get(`/products/${id}`);
+          const response = await axiosInstance.get(`/app/products/${id}`);
           return response.data;
         } catch (error) {
           console.error('Error fetching product:', error);
@@ -92,7 +92,7 @@ export const api = {
 
       create: async (data) => {
         try {
-          const response = await axiosInstance.post('/products', data);
+          const response = await axiosInstance.post('/app/products', data);
           return response.data;
         } catch (error) {
           console.error('Error creating product:', error);
@@ -102,7 +102,7 @@ export const api = {
 
       update: async (id, data) => {
         try {
-          const response = await axiosInstance.put(`/products/${id}`, data);
+          const response = await axiosInstance.put(`/app/products/${id}`, data);
           return response.data;
         } catch (error) {
           console.error('Error updating product:', error);
@@ -112,7 +112,7 @@ export const api = {
 
       delete: async (id) => {
         try {
-          const response = await axiosInstance.delete(`/products/${id}`);
+          const response = await axiosInstance.delete(`/app/products/${id}`);
           return response.data;
         } catch (error) {
           console.error('Error deleting product:', error);
@@ -124,17 +124,17 @@ export const api = {
     Category: {
       list: async () => {
         try {
-          const response = await axiosInstance.get('/categories');
+          const response = await axiosInstance.get('/app/categories');
           return response.data || [];
         } catch (error) {
           console.error('Error fetching categories:', error);
-          return [];
+          throw error;
         }
       },
 
       get: async (id) => {
         try {
-          const response = await axiosInstance.get(`/categories/${id}`);
+          const response = await axiosInstance.get(`/app/categories/${id}`);
           return response.data;
         } catch (error) {
           console.error('Error fetching category:', error);
@@ -148,7 +148,7 @@ export const api = {
           if (data instanceof FormData) {
             config.headers = { 'Content-Type': 'multipart/form-data' };
           }
-          const response = await axiosInstance.post('/categories', data, config);
+          const response = await axiosInstance.post('/app/categories', data, config);
           return response.data;
         } catch (error) {
           console.error('Error creating category:', error);
@@ -163,10 +163,10 @@ export const api = {
             config.headers = { 'Content-Type': 'multipart/form-data' };
             // Laravel needs _method=PUT for FormData because HTML forms don't support PUT
             data.append('_method', 'PUT');
-            const response = await axiosInstance.post(`/categories/${id}`, data, config);
+            const response = await axiosInstance.post(`/app/categories/${id}`, data, config);
             return response.data;
           }
-          const response = await axiosInstance.put(`/categories/${id}`, data);
+          const response = await axiosInstance.put(`/app/categories/${id}`, data);
           return response.data;
         } catch (error) {
           console.error('Error updating category:', error);
@@ -176,7 +176,7 @@ export const api = {
 
       delete: async (id) => {
         try {
-          const response = await axiosInstance.delete(`/categories/${id}`);
+          const response = await axiosInstance.delete(`/app/categories/${id}`);
           return response.data;
         } catch (error) {
           console.error('Error deleting category:', error);
@@ -188,17 +188,17 @@ export const api = {
     User: {
       list: async () => {
         try {
-          const response = await axiosInstance.get('/users');
+          const response = await axiosInstance.get('/app/users');
           return response.data || [];
         } catch (error) {
           console.error('Error fetching users:', error);
-          return [];
+          throw error;
         }
       },
 
       get: async (id) => {
         try {
-          const response = await axiosInstance.get(`/users/${id}`);
+          const response = await axiosInstance.get(`/app/users/${id}`);
           return response.data;
         } catch (error) {
           console.error('Error fetching user:', error);
@@ -208,7 +208,7 @@ export const api = {
 
       update: async (id, data) => {
         try {
-          const response = await axiosInstance.put(`/users/${id}`, data);
+          const response = await axiosInstance.put(`/app/users/${id}`, data);
           return response.data;
         } catch (error) {
           console.error('Error updating user:', error);
@@ -218,7 +218,7 @@ export const api = {
 
       delete: async (id) => {
         try {
-          const response = await axiosInstance.delete(`/users/${id}`);
+          const response = await axiosInstance.delete(`/app/users/${id}`);
           return response.data;
         } catch (error) {
           console.error('Error deleting user:', error);

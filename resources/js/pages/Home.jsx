@@ -16,9 +16,8 @@ export default function Home() {
         queryKey: ['featured-products'],
         queryFn: async () => {
             const allProducts = await api.entities.Product.list();
-            return allProducts.filter(p => !p.featured || p.featured).slice(0, 4); // Debug: show all or active
-            // Reverting debug:
-            return allProducts.filter(p => p.featured).slice(0, 4);
+            // Show latest 8 products regardless of featured status to ensure visibility
+            return allProducts.slice(0, 8);
         },
     });
 

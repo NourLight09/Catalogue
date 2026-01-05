@@ -15,13 +15,11 @@ export default function Catalog() {
   const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ['products'],
     queryFn: () => api.entities.Product.list(),
-    initialData: [],
   });
 
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: () => api.entities.Category.list(),
-    initialData: [],
   });
 
   // Vérifier les paramètres d'URL pour le filtre de catégorie
@@ -41,20 +39,20 @@ export default function Catalog() {
       // Vérifier si selectedCategory est un ID ou un Slug
       // Si selectedCategory est un nombre (ou une chaîne numérique), comparer avec l'ID
       // Si selectedCategory est une chaîne (slug), comparer avec le slug
-      
+
       const isId = !isNaN(selectedCategory);
-      
+
       if (isId) {
-         matchesCategory = product.category_id === Number(selectedCategory);
+        matchesCategory = product.category_id === Number(selectedCategory);
       } else {
-         // C'est un slug, trouver d'abord la catégorie
-         const categoryBySlug = categories.find(c => c.slug === selectedCategory);
-         if (categoryBySlug) {
-            matchesCategory = product.category_id === categoryBySlug.id;
-         } else {
-            // Fallback: maybe the product has a category object loaded?
-            matchesCategory = product.category?.slug === selectedCategory;
-         }
+        // C'est un slug, trouver d'abord la catégorie
+        const categoryBySlug = categories.find(c => c.slug === selectedCategory);
+        if (categoryBySlug) {
+          matchesCategory = product.category_id === categoryBySlug.id;
+        } else {
+          // Fallback: maybe the product has a category object loaded?
+          matchesCategory = product.category?.slug === selectedCategory;
+        }
       }
     }
 

@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
 
-import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminHeader from '../components/admin/AdminHeader';
 import {
     Plus,
     Search,
     Edit,
     Trash2,
-    MoreHorizontal,
     Image as ImageIcon,
     Loader2,
-    X,
     Eye
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -43,12 +40,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
     AlertDialog,
     AlertDialogAction,
     AlertDialogCancel,
@@ -71,7 +62,7 @@ export default function AdminProducts() {
         name: '',
         description: '',
         price: '',
-        stock_quantity: '',
+        stock: '',
         category_id: '',
         category_name: '',
         image_url: '',
@@ -125,11 +116,12 @@ export default function AdminProducts() {
             name: '',
             description: '',
             price: '',
-            stock_quantity: '',
+            stock: '',
             category_id: '',
             category_name: '',
             image_url: '',
-            featured: false
+            featured: false,
+            ingredients: []
         });
         setIsDialogOpen(true);
     };
@@ -145,7 +137,7 @@ export default function AdminProducts() {
             name: product.name || '',
             description: product.description || '',
             price: product.price?.toString() || '',
-            stock_quantity: product.stock_quantity?.toString() || '',
+            stock: product.stock?.toString() || '',
             category_id: product.category_id || '',
             category_name: product.category_name || '',
             image_url: product.image_url || '',
@@ -162,11 +154,12 @@ export default function AdminProducts() {
             name: '',
             description: '',
             price: '',
-            stock_quantity: '',
+            stock: '',
             category_id: '',
             category_name: '',
             image_url: '',
-            featured: false
+            featured: false,
+            ingredients: []
         });
     };
 
@@ -175,7 +168,7 @@ export default function AdminProducts() {
         const data = {
             ...formData,
             price: parseFloat(formData.price) || 0,
-            stock_quantity: parseInt(formData.stock_quantity) || 0,
+            stock: parseInt(formData.stock) || 0,
             category_name: category?.name || ''
         };
 
@@ -192,142 +185,142 @@ export default function AdminProducts() {
 
     return (
         <div className="flex-1">
-                <AdminHeader
-                    title="Gestion des Produits"
-                    subtitle={`${products.length} produits au total`}
-                />
+            <AdminHeader
+                title="Gestion des Produits"
+                subtitle={`${products.length} produits au total`}
+            />
 
-                <main className="p-8">
-                    {/* Barre d'outils */}
-                    <div className="flex flex-col sm:flex-row gap-4 justify-between mb-6">
-                        <div className="relative flex-1 max-w-md">
-                            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
-                            <Input
-                                placeholder="Rechercher un produit..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-10"
-                            />
-                        </div>
-                        <Button onClick={handleOpenCreate} className="bg-stone-900 hover:bg-stone-800">
-                            <Plus size={18} className="mr-2" />
-                            Ajouter un produit
-                        </Button>
+            <main className="p-8">
+                {/* Barre d'outils */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-between mb-6">
+                    <div className="relative flex-1 max-w-md">
+                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                        <Input
+                            placeholder="Rechercher un produit..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-10"
+                        />
                     </div>
+                    <Button onClick={handleOpenCreate} className="bg-stone-900 hover:bg-stone-800">
+                        <Plus size={18} className="mr-2" />
+                        Ajouter un produit
+                    </Button>
+                </div>
 
-                    {/* Tableau */}
-                    <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-stone-50">
-                                    <TableHead className="w-12"></TableHead>
-                                    <TableHead>Produit</TableHead>
-                                    <TableHead>Catégorie</TableHead>
-                                    <TableHead>Prix</TableHead>
-                                    <TableHead>Stock</TableHead>
-                                    <TableHead>Statut</TableHead>
-                                    <TableHead className="w-12"></TableHead>
+                {/* Tableau */}
+                <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-stone-50">
+                                <TableHead className="w-12"></TableHead>
+                                <TableHead>Produit</TableHead>
+                                <TableHead>Catégorie</TableHead>
+                                <TableHead>Prix</TableHead>
+                                <TableHead>Stock</TableHead>
+                                <TableHead>Statut</TableHead>
+                                <TableHead className="w-12"></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center py-8">
+                                        <Loader2 className="w-6 h-6 animate-spin mx-auto text-stone-400" />
+                                    </TableCell>
                                 </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {isLoading ? (
-                                    <TableRow>
-                                        <TableCell colSpan={7} className="text-center py-8">
-                                            <Loader2 className="w-6 h-6 animate-spin mx-auto text-stone-400" />
-                                        </TableCell>
-                                    </TableRow>
-                                ) : filteredProducts.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={7} className="text-center py-8 text-stone-500">
-                                            Aucun produit trouvé
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    filteredProducts.map((product) => (
-                                        <TableRow key={product.id} className="hover:bg-stone-50">
-                                            <TableCell>
-                                                <div className="w-12 h-12 bg-stone-100 rounded-lg overflow-hidden">
-                                                    {product.image_url ? (
-                                                        <img
-                                                            src={product.image_url}
-                                                            alt={product.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-full h-full flex items-center justify-center">
-                                                            <ImageIcon size={20} className="text-stone-400" />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div>
-                                                    <p className="font-medium text-stone-900">{product.name}</p>
-                                                    {product.featured && (
-                                                        <Badge className="mt-1 bg-amber-100 text-amber-700">Featured</Badge>
-                                                    )}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="text-stone-600">
-                                                    {product.category_name || 'Non catégorisé'}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className="font-medium">{Number(product.price || 0).toFixed(2)} €</span>
-                                            </TableCell>
-                                            <TableCell>
-                                                <span className={product.stock_quantity <= 5 ? 'text-red-600 font-medium' : ''}>
-                                                    {product.stock_quantity || 0}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                {product.stock_quantity === 0 ? (
-                                                    <Badge className="bg-red-600 text-white hover:bg-red-700">Rupture</Badge>
-                                                ) : product.stock_quantity <= 5 ? (
-                                                    <Badge className="bg-orange-500 text-white hover:bg-orange-600">Stock faible</Badge>
+                            ) : filteredProducts.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center py-8 text-stone-500">
+                                        Aucun produit trouvé
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                filteredProducts.map((product) => (
+                                    <TableRow key={product.id} className="hover:bg-stone-50">
+                                        <TableCell>
+                                            <div className="w-12 h-12 bg-stone-100 rounded-lg overflow-hidden">
+                                                {product.image_url ? (
+                                                    <img
+                                                        src={product.image_url}
+                                                        alt={product.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
                                                 ) : (
-                                                    <Badge className="bg-green-600 text-white hover:bg-green-700">En stock</Badge>
+                                                    <div className="w-full h-full flex items-center justify-center">
+                                                        <ImageIcon size={20} className="text-stone-400" />
+                                                    </div>
                                                 )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center justify-end gap-1">
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="icon" 
-                                                        className="h-8 w-8 text-stone-500 hover:text-stone-900"
-                                                        onClick={() => handleOpenView(product)}
-                                                    >
-                                                        <Eye size={16} />
-                                                    </Button>
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="icon" 
-                                                        className="h-8 w-8 text-stone-500 hover:text-stone-900"
-                                                        onClick={() => handleOpenEdit(product)}
-                                                    >
-                                                        <Edit size={16} />
-                                                    </Button>
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="icon" 
-                                                        className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
-                                                        onClick={() => {
-                                                            setSelectedProduct(product);
-                                                            setIsDeleteDialogOpen(true);
-                                                        }}
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </main>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div>
+                                                <p className="font-medium text-stone-900">{product.name}</p>
+                                                {product.featured && (
+                                                    <Badge className="mt-1 bg-amber-100 text-amber-700">Featured</Badge>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="text-stone-600">
+                                                {product.category_name || 'Non catégorisé'}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className="font-medium">{Number(product.price || 0).toFixed(2)} €</span>
+                                        </TableCell>
+                                        <TableCell>
+                                            <span className={product.stock <= 5 ? 'text-red-600 font-medium' : ''}>
+                                                {product.stock || 0}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell>
+                                            {product.stock === 0 ? (
+                                                <Badge className="bg-red-600 text-white hover:bg-red-700">Rupture</Badge>
+                                            ) : product.stock <= 5 ? (
+                                                <Badge className="bg-orange-500 text-white hover:bg-orange-600">Stock faible</Badge>
+                                            ) : (
+                                                <Badge className="bg-green-600 text-white hover:bg-green-700">En stock</Badge>
+                                            )}
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center justify-end gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-stone-500 hover:text-stone-900"
+                                                    onClick={() => handleOpenView(product)}
+                                                >
+                                                    <Eye size={16} />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-stone-500 hover:text-stone-900"
+                                                    onClick={() => handleOpenEdit(product)}
+                                                >
+                                                    <Edit size={16} />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                                    onClick={() => {
+                                                        setSelectedProduct(product);
+                                                        setIsDeleteDialogOpen(true);
+                                                    }}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+            </main>
 
             {/* Dialogue de Création/Édition */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -393,8 +386,8 @@ export default function AdminProducts() {
                                 <Label>Quantité en stock</Label>
                                 <Input
                                     type="number"
-                                    value={formData.stock_quantity}
-                                    onChange={(e) => setFormData({ ...formData, stock_quantity: e.target.value })}
+                                    value={formData.stock}
+                                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                                     placeholder="0"
                                 />
                             </div>
@@ -458,15 +451,15 @@ export default function AdminProducts() {
                             Détails du produit
                         </DialogTitle>
                     </DialogHeader>
-                    
+
                     {selectedProduct && (
                         <div className="grid gap-4 py-4">
                             <div className="flex items-center gap-4">
                                 <div className="w-20 h-20 bg-stone-100 rounded-lg flex items-center justify-center overflow-hidden">
                                     {selectedProduct.image_url ? (
-                                        <img 
-                                            src={selectedProduct.image_url} 
-                                            alt={selectedProduct.name} 
+                                        <img
+                                            src={selectedProduct.image_url}
+                                            alt={selectedProduct.name}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
@@ -497,14 +490,14 @@ export default function AdminProducts() {
                                     <Label className="text-stone-500">Stock</Label>
                                     <div className="flex items-center gap-2">
                                         <span className="text-stone-900 font-medium">
-                                            {selectedProduct.stock_quantity || 0} unités
+                                            {selectedProduct.stock || 0} unités
                                         </span>
-                                        {selectedProduct.stock_quantity === 0 ? (
-                                            <Badge className="bg-red-100 text-red-700 text-xs">Rupture</Badge>
-                                        ) : selectedProduct.stock_quantity <= 5 ? (
-                                            <Badge className="bg-orange-100 text-orange-700 text-xs">Faible</Badge>
+                                        {selectedProduct.stock === 0 ? (
+                                            <Badge className="bg-red-300 text-red-900 text-xs">Rupture</Badge>
+                                        ) : selectedProduct.stock <= 5 ? (
+                                            <Badge className="bg-orange-300 text-orange-900 text-xs">Faible</Badge>
                                         ) : (
-                                            <Badge className="bg-green-100 text-green-700 text-xs">En stock</Badge>
+                                            <Badge className="bg-green-300 text-green-900 text-xs">En stock</Badge>
                                         )}
                                     </div>
                                 </div>
@@ -521,8 +514,8 @@ export default function AdminProducts() {
                                 <div className="space-y-1">
                                     <Label className="text-stone-500">Ingrédients</Label>
                                     <p className="text-stone-900 text-sm whitespace-pre-line">
-                                        {Array.isArray(selectedProduct.ingredients) 
-                                            ? selectedProduct.ingredients.join(', ') 
+                                        {Array.isArray(selectedProduct.ingredients)
+                                            ? selectedProduct.ingredients.join(', ')
                                             : selectedProduct.ingredients || <span className="italic text-stone-400">Non spécifié</span>}
                                     </p>
                                 </div>
@@ -561,4 +554,3 @@ export default function AdminProducts() {
         </div>
     );
 }
-

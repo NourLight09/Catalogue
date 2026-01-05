@@ -14,9 +14,10 @@ import {
 
 const menuItems = [
     { name: 'Tableau de bord', icon: LayoutDashboard, page: 'AdminDashboard', path: '/app/admin/dashboard' },
-    { name: 'Produits', icon: Package, page: 'AdminProducts', path: '/app/admin/products' },
     { name: 'Catégories', icon: FolderTree, page: 'AdminCategories', path: '/app/admin/categories' },
+    { name: 'Produits', icon: Package, page: 'AdminProducts', path: '/app/admin/products' },
     { name: 'Stocks', icon: Boxes, page: 'AdminStock', path: '/app/admin/stock' },
+    { name: 'Utilisateurs', icon: Users, page: 'AdminUsers', path: '/app/admin/users' },
 ];
 
 export default function AdminSidebar() {

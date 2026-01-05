@@ -26,18 +26,16 @@ class UserController extends Controller
     /**
      * Afficher la ressource spécifiée.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        return User::findOrFail($id);
+        return $user;
     }
 
     /**
      * Mettre à jour la ressource spécifiée dans le stockage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
-
         $validated = $request->validate([
             'role' => 'required|in:admin,user',
         ]);
@@ -50,9 +48,8 @@ class UserController extends Controller
     /**
      * Supprimer la ressource spécifiée du stockage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
         $user->delete();
 
         return response()->noContent();

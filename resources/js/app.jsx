@@ -21,14 +21,7 @@ import AdminStock from './pages/AdminStock';
 import AdminUsers from './pages/AdminUsers';
 
 // Créer un client pour React Query
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      gcTime: 1000 * 60 * 10, // 10 minutes
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 // Définir les routes avec les noms de page pour la mise en page
 const routes = [

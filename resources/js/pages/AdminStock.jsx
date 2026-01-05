@@ -42,8 +42,8 @@ export default function AdminStock() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, stock_quantity }) =>
-      api.entities.Product.update(id, { stock_quantity: parseInt(stock_quantity) }),
+    mutationFn: ({ id, stock }) =>
+      api.entities.Product.update(id, { stock: parseInt(stock) }),
     onSuccess: () => {
       queryClient.invalidateQueries(['products']);
       toast.success('Stock mis à jour');
@@ -57,7 +57,7 @@ export default function AdminStock() {
 
   const handleOpenDialog = (product) => {
     setEditingProduct(product);
-    setNewStock(product.stock_quantity.toString());
+    setNewStock(product.stock.toString());
     setDialogOpen(true);
   };
 
@@ -71,7 +71,7 @@ export default function AdminStock() {
     if (editingProduct && newStock !== '' && !isNaN(parseInt(newStock))) {
       updateMutation.mutate({
         id: editingProduct.id,
-        stock_quantity: newStock,
+        stock: newStock,
       });
     }
   };
@@ -80,25 +80,25 @@ export default function AdminStock() {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter =
       filterStatus === 'all' ||
-      (filterStatus === 'low' && product.stock_quantity <= 5 && product.stock_quantity > 0) ||
-      (filterStatus === 'out' && product.stock_quantity === 0);
+      (filterStatus === 'low' && product.stock <= 5 && product.stock > 0) ||
+      (filterStatus === 'out' && product.stock === 0);
     return matchesSearch && matchesFilter;
   });
 
   // Calculs des statistiques en temps réel
   const totalProducts = products.length;
   // Produits avec stock <= 5 mais > 0 (Stock faible)
-  const lowStockCount = products.filter(p => Number(p.stock_quantity) <= 5 && Number(p.stock_quantity) > 0).length;
+  const lowStockCount = products.filter(p => Number(p.stock) <= 5 && Number(p.stock) > 0).length;
   // Produits en rupture totale (0)
-  const outOfStockCount = products.filter(p => Number(p.stock_quantity) === 0).length;
+  const outOfStockCount = products.filter(p => Number(p.stock) === 0).length;
   // Produits avec stock suffisant (> 5)
-  const inStockCount = products.filter(p => Number(p.stock_quantity) > 5).length;
+  const inStockCount = products.filter(p => Number(p.stock) > 5).length;
 
   // Calcul de la valeur totale du stock (Prix * Quantité)
-  const totalStockValue = products.reduce((sum, p) => sum + ((p.price || 0) * (p.stock_quantity || 0)), 0);
+  const totalStockValue = products.reduce((sum, p) => sum + ((p.price || 0) * (p.stock || 0)), 0);
 
   // Produits à commander (rupture ou stock très faible)
-  const productsToOrder = products.filter(p => p.stock_quantity <= 5).sort((a, b) => a.stock_quantity - b.stock_quantity);
+  const productsToOrder = products.filter(p => p.stock <= 5).sort((a, b) => a.stock - b.stock);
 
   return (
     <div className="flex-1">
@@ -263,8 +263,8 @@ export default function AdminStock() {
                           <div className="flex-1">
                             <p className="font-medium text-gray-900 text-sm">{product.name}</p>
                             <p className="text-xs text-gray-600 mt-1">
-                              Stock: <span className={`font-bold ${product.stock_quantity === 0 ? 'text-red-600' : 'text-orange-600'}`}>
-                                {product.stock_quantity}
+                              Stock: <span className={`font-bold ${product.stock === 0 ? 'text-red-600' : 'text-orange-600'}`}>
+                                {product.stock}
                               </span>
                             </p>
                           </div>
@@ -327,28 +327,28 @@ export default function AdminStock() {
                             </span>
                           </TableCell>
                           <TableCell>
-                            <span className={`text-2xl font-bold ${product.stock_quantity > 5
+                            <span className={`text-2xl font-bold ${product.stock > 5
                               ? 'text-green-600'
-                              : product.stock_quantity > 0
+                              : product.stock > 0
                                 ? 'text-orange-600'
                                 : 'text-red-600'
                               }`}>
-                              {product.stock_quantity}
+                              {product.stock}
                             </span>
                           </TableCell>
                           <TableCell>
-                            {product.stock_quantity > 5 ? (
-                              <Badge className="bg-green-100 text-green-700 border-0 flex items-center gap-1 w-fit">
+                            {product.stock > 5 ? (
+                              <Badge className="bg-green-300 text-green-900 border-0 flex items-center gap-1 w-fit">
                                 <CheckCircle className="w-3 h-3" />
                                 En stock
                               </Badge>
-                            ) : product.stock_quantity > 0 ? (
-                              <Badge className="bg-orange-100 text-orange-700 border-0 flex items-center gap-1 w-fit">
+                            ) : product.stock > 0 ? (
+                              <Badge className="bg-orange-300 text-orange-900 border-0 flex items-center gap-1 w-fit">
                                 <AlertTriangle className="w-3 h-3" />
                                 Stock faible
                               </Badge>
                             ) : (
-                              <Badge className="bg-red-100 text-red-700 border-0 flex items-center gap-1 w-fit">
+                              <Badge className="bg-red-300 text-red-900 border-0 flex items-center gap-1 w-fit">
                                 <AlertTriangle className="w-3 h-3" />
                                 Épuisé
                               </Badge>
@@ -396,7 +396,7 @@ export default function AdminStock() {
                   />
                   <div>
                     <p className="font-medium text-gray-900">{editingProduct.name}</p>
-                    <p className="text-sm text-gray-600">Stock actuel: {editingProduct.stock_quantity}</p>
+                    <p className="text-sm text-gray-600">Stock actuel: {editingProduct.stock}</p>
                   </div>
                 </div>
                 <div>

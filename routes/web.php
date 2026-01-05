@@ -22,18 +22,36 @@ Route::middleware('auth')->group(function () {
     Route::get('/current-user', function () {
         return auth()->user();
     });
-
-    Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
-    Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-    Route::apiResource('users', UserController::class);
 });
 
-Route::apiResource('categories', CategoryController::class)->only(['index', 'show']);
-Route::apiResource('products', ProductController::class)->only(['index', 'show']);
+// Routes API PUBLIQUES (avant la catch-all)
+Route::get('/app/products', [ProductController::class, 'index']);
+Route::get('/app/products/{product}', [ProductController::class, 'show']);
+Route::get('/app/categories', [CategoryController::class, 'index']);
+Route::get('/app/categories/{category}', [CategoryController::class, 'show']);
+Route::get('/app/users', [UserController::class, 'index']);
+Route::get('/app/users/{user}', [UserController::class, 'show']);
+
+// Routes API PROTÉGÉES
+Route::middleware('auth')->group(function () {
+    Route::post('/app/products', [ProductController::class, 'store']);
+    Route::put('/app/products/{product}', [ProductController::class, 'update']);
+    Route::patch('/app/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/app/products/{product}', [ProductController::class, 'destroy']);
+
+    Route::post('/app/categories', [CategoryController::class, 'store']);
+    Route::put('/app/categories/{category}', [CategoryController::class, 'update']);
+    Route::patch('/app/categories/{category}', [CategoryController::class, 'update']);
+    Route::delete('/app/categories/{category}', [CategoryController::class, 'destroy']);
+
+    Route::put('/app/users/{user}', [UserController::class, 'update']);
+    Route::patch('/app/users/{user}', [UserController::class, 'update']);
+    Route::delete('/app/users/{user}', [UserController::class, 'destroy']);
+});
 
 require __DIR__ . '/auth.php';
 
-// Routes de l'application React - capture toutes les routes sous /app
+// Routes de l'application React - capture toutes les routes sous /app (DOIT être à la fin)
 Route::get('/app/{any?}', function () {
     return view('app');
 })->where('any', '.*');

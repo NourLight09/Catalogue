@@ -28,7 +28,6 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'nullable|integer|min:0',
             'stock' => 'nullable|integer|min:0',
             'ingredients' => 'nullable|array',
             'image_url' => 'nullable|string',
@@ -37,13 +36,7 @@ class ProductController extends Controller
         ]);
 
         $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(6);
-        
-        // Gérer les deux formats de stock
-        if (isset($validated['stock_quantity'])) {
-            $validated['stock'] = $validated['stock_quantity'];
-            unset($validated['stock_quantity']);
-        }
-        
+
         // Gérer les deux formats d'image
         if (isset($validated['image_url'])) {
             $validated['image'] = $validated['image_url'];
@@ -72,7 +65,6 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'sometimes|required|numeric|min:0',
-            'stock_quantity' => 'nullable|integer|min:0',
             'stock' => 'nullable|integer|min:0',
             'ingredients' => 'nullable|array',
             'image_url' => 'nullable|string',
@@ -85,12 +77,6 @@ class ProductController extends Controller
             $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(6);
         }
 
-        // Gérer les deux formats de stock
-        if (isset($validated['stock_quantity'])) {
-            $validated['stock'] = $validated['stock_quantity'];
-            unset($validated['stock_quantity']);
-        }
-        
         // Gérer les deux formats d'image
         if (isset($validated['image_url']) && !$request->hasFile('image')) {
             $validated['image'] = $validated['image_url'];

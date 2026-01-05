@@ -44,11 +44,24 @@ export default function AdminUsers() {
 
   const queryClient = useQueryClient();
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], isLoading, isError, error } = useQuery({
     queryKey: ['users'],
-    queryFn: () => api.entities.User.list(),
-    initialData: [],
+    queryFn: async () => {
+      try {
+        const result = await api.entities.User.list();
+        return result;
+      } catch (err) {
+        throw err;
+      }
+    },
   });
+
+  React.useEffect(() => {
+    if (isError) {
+      toast.error("Erreur lors du chargement des utilisateurs: " + (error?.message || "Erreur inconnue"));
+      console.error("Users fetch error:", error);
+    }
+  }, [isError, error]);
 
   const updateMutation = useMutation({
     mutationFn: ({ id, role }) => api.entities.User.update(id, { role }),

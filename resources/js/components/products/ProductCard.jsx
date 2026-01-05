@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from 'framer-motion';
 
 export default function ProductCard({ product, index = 0 }) {
-    const isLowStock = product.stock_quantity > 0 && product.stock_quantity <= 5;
-    const isOutOfStock = product.stock_quantity === 0;
+    const isLowStock = product.stock > 0 && product.stock <= 5;
+    const isOutOfStock = product.stock === 0;
 
     return (
         <motion.div
@@ -19,12 +19,12 @@ export default function ProductCard({ product, index = 0 }) {
         >
             <Link to={`${createPageUrl('ProductDetail')}?id=${product.id}`}>
                 <div className="relative aspect-square overflow-hidden bg-stone-100 mb-4">
-                    <img 
+                    <img
                         src={product.image_url || 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=80'}
                         alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    
+
                     {/* Badges */}
                     <div className="absolute top-4 left-4 flex flex-col gap-2">
                         {product.featured && (

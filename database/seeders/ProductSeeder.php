@@ -157,6 +157,6 @@ class ProductSeeder extends Seeder
             $product['slug'] = Str::slug($product['name']);
         }
 
-        DB::table('products')->upsert($products, ['slug'], ['name', 'description', 'price', 'stock', 'category_id', 'image', 'featured', 'ingredients', 'updated_at']);
+        DB::table('products')->upsert($products, ['slug'], ['name', 'description', 'price', 'stock', 'category_id', 'image', 'featured', 'ingredients', 'created_at', 'updated_at']);
     }
 }

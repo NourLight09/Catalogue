@@ -27,16 +27,11 @@ class Product extends Model
         'stock' => 'integer',
     ];
 
-    protected $appends = ['stock_quantity', 'category_name', 'image_url'];
+    protected $appends = ['category_name', 'image_url'];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function getStockQuantityAttribute()
-    {
-        return $this->stock;
     }
 
     public function getCategoryNameAttribute()
