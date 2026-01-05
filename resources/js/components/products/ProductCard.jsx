@@ -44,7 +44,7 @@ export default function ProductCard({ product, index = 0 }) {
                         )}
                     </div>
 
-                    {/* Quick Actions */}
+                    {/* Actions Rapides */}
                     <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 transform translate-x-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
                         <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-stone-100 transition-colors">
                             <Heart size={18} className="text-stone-600" />
@@ -54,7 +54,7 @@ export default function ProductCard({ product, index = 0 }) {
                         </button>
                     </div>
 
-                    {/* Add to Cart Overlay */}
+                    {/* Superposition Ajouter au panier */}
                     {!isOutOfStock && (
                         <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 transform translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
                             <Button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-none py-3 text-sm tracking-wide">

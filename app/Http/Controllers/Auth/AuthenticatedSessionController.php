@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Display the login view.
+     * Affiche la vue de connexion.
      */
     public function create(): View
     {
@@ -20,7 +20,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Gère une demande d'authentification entrante.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -28,12 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Always redirect to the main app, admins will see the admin button
+        // Redirige toujours vers l'application principale, les administrateurs verront le bouton admin
         return redirect()->intended('/app');
     }
 
     /**
-     * Destroy an authenticated session.
+     * Détruit une session authentifiée (déconnexion).
      */
     public function destroy(Request $request): RedirectResponse
     {
