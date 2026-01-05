@@ -69,10 +69,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex-1">
-      <AdminHeader
-        title="Tableau de bord"
-        subtitle="Vue d'ensemble de votre boutique"
-      />
+
       <main className="p-8">
         {/* Bannière de bienvenue */}
         <motion.div
