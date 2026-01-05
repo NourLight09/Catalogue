@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../../contexts/CartContext';
 import { createPageUrl } from '../../utils';
 import { Heart, ShoppingBag, Star, Eye } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from 'framer-motion';
 
 export default function ProductCard({ product, index = 0 }) {
+    const { addToCart } = useCart();
     const isLowStock = product.stock > 0 && product.stock <= 5;
     const isOutOfStock = product.stock === 0;
 
@@ -57,7 +59,13 @@ export default function ProductCard({ product, index = 0 }) {
                     {/* Superposition Ajouter au panier */}
                     {!isOutOfStock && (
                         <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 transform translate-y-4 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                            <Button className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-none py-3 text-sm tracking-wide">
+                            <Button
+                                className="w-full bg-stone-900 hover:bg-stone-800 text-white rounded-none py-3 text-sm tracking-wide"
+                                onClick={(e) => {
+                                    e.preventDefault(); // Empêcher la navigation vers la page produit
+                                    addToCart(product);
+                                }}
+                            >
                                 <ShoppingBag size={16} className="mr-2" />
                                 Ajouter au panier
                             </Button>

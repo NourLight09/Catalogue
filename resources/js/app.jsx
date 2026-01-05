@@ -21,7 +21,15 @@ import AdminStock from './pages/AdminStock';
 import AdminUsers from './pages/AdminUsers';
 
 // Créer un client pour React Query
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity, // Les données ne deviennent jamais obsolètes
+      gcTime: Infinity, // Les données en cache ne sont jamais supprimées
+      retry: 1,
+    },
+  },
+});
 
 // Définir les routes avec les noms de page pour la mise en page
 const routes = [

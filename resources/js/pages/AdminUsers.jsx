@@ -54,6 +54,7 @@ export default function AdminUsers() {
         throw err;
       }
     },
+    initialData: [],
   });
 
   React.useEffect(() => {
